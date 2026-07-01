@@ -1,0 +1,961 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dawn Voyager Product Testing Blog</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #fbfaf7;
+      --ink: #202020;
+      --muted: #66625c;
+      --line: #ddd7cc;
+      --soft: #f2eee6;
+      --accent: #1f6f78;
+      --accent-dark: #154d54;
+      --warm: #b85f2d;
+      --like: #e0a106;
+      --max: 880px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: Arial, "Helvetica Neue", sans-serif;
+      line-height: 1.8;
+      letter-spacing: 0;
+    }
+
+    a {
+      color: var(--accent-dark);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 4px;
+    }
+
+    a:hover,
+    a:focus-visible {
+      color: var(--warm);
+    }
+
+    .language-switch {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px;
+      background: rgba(251, 250, 247, 0.92);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      box-shadow: 0 8px 28px rgba(30, 28, 24, 0.08);
+      backdrop-filter: blur(8px);
+    }
+
+    .language-switch button {
+      min-width: 48px;
+      height: 34px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .language-switch button[aria-pressed="true"] {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .page {
+      width: min(var(--max), calc(100% - 36px));
+      margin: 0 auto;
+      padding: 92px 0 60px;
+    }
+
+    header {
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .kicker {
+      margin: 0 0 10px;
+      color: var(--warm);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(32px, 6vw, 58px);
+      line-height: 1.18;
+      font-weight: 800;
+    }
+
+    .lead {
+      max-width: 720px;
+      margin: 22px 0 0;
+      color: #393630;
+      font-size: 19px;
+    }
+
+    .guide {
+      margin-top: 28px;
+      padding: 18px 0 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .guide-title {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .toc {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .toc a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 6px 13px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fffdf9;
+      color: var(--accent-dark);
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    main {
+      display: grid;
+      gap: 42px;
+      margin-top: 40px;
+    }
+
+    section {
+      scroll-margin-top: 90px;
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+      font-size: 28px;
+      line-height: 1.28;
+    }
+
+    p {
+      margin: 12px 0 0;
+    }
+
+    .profile {
+      display: grid;
+      grid-template-columns: 116px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .avatar {
+      width: 116px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #fff;
+      outline: 1px solid var(--line);
+      background: var(--soft);
+    }
+
+    .name {
+      margin-top: 0;
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .text-list {
+      margin: 16px 0 0;
+      padding-left: 1.2em;
+    }
+
+    .text-list li {
+      margin: 8px 0;
+      padding-left: 4px;
+    }
+
+    .numbered {
+      counter-reset: step;
+      margin: 16px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .numbered li {
+      position: relative;
+      margin: 12px 0;
+      padding-left: 44px;
+    }
+
+    .numbered li::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute;
+      top: 2px;
+      left: 0;
+      display: inline-grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .note {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-left: 4px solid var(--warm);
+      background: var(--soft);
+      color: #403b34;
+    }
+
+    .detail-links {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin: 20px 0 24px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .detail-links a {
+      display: flex;
+      align-items: center;
+      min-height: 48px;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fffdf9;
+      color: var(--accent-dark);
+      text-decoration: none;
+      font-weight: 800;
+      line-height: 1.3;
+    }
+
+    .accordion {
+      display: grid;
+      gap: 12px;
+    }
+
+    details {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fffdf9;
+      overflow: hidden;
+    }
+
+    summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 15px 16px;
+      color: var(--accent-dark);
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    summary::after {
+      content: "+";
+      display: inline-grid;
+      place-items: center;
+      flex: 0 0 auto;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--soft);
+      color: var(--warm);
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    details[open] summary::after {
+      content: "-";
+    }
+
+    .detail-body {
+      padding: 0 16px 18px;
+      border-top: 1px solid var(--line);
+    }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      margin-top: 24px;
+    }
+
+    .chat-button,
+    .resource-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 48px;
+      padding: 10px 18px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 800;
+      line-height: 1.25;
+    }
+
+    .chat-button {
+      color: #fff;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.28), transparent 30%),
+        linear-gradient(135deg, #137f70, #1f6f78 55%, #2e4a7d);
+      box-shadow: 0 14px 30px rgba(31, 111, 120, 0.2);
+    }
+
+    .chat-button:hover,
+    .chat-button:focus-visible {
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    .chat-button span:first-child {
+      display: inline-grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.22);
+      font-size: 16px;
+    }
+
+    .resource-link {
+      position: relative;
+      overflow: hidden;
+      color: var(--accent-dark);
+      background: #fffdf9;
+      border-color: var(--line);
+    }
+
+    .resource-link.is-flashing {
+      animation: contactPulse 1.35s ease-in-out infinite;
+    }
+
+    .resource-link.is-flashing::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(110deg, transparent 0%, rgba(31, 111, 120, 0.16) 45%, transparent 70%);
+      transform: translateX(-120%);
+      animation: contactSweep 1.35s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .resource-link span {
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes contactPulse {
+      0%,
+      100% {
+        border-color: var(--line);
+        box-shadow: 0 0 0 rgba(31, 111, 120, 0);
+      }
+
+      50% {
+        border-color: rgba(31, 111, 120, 0.6);
+        box-shadow: 0 0 0 5px rgba(31, 111, 120, 0.1);
+      }
+    }
+
+    @keyframes contactSweep {
+      0% {
+        transform: translateX(-120%);
+      }
+
+      55%,
+      100% {
+        transform: translateX(120%);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .resource-link.is-flashing,
+      .resource-link.is-flashing::after {
+        animation: none;
+      }
+    }
+
+    .like-area {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 14px;
+      margin-top: 24px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+    }
+
+    .like-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 48px;
+      padding: 9px 16px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fffdf9;
+      color: var(--muted);
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .like-button:disabled {
+      cursor: wait;
+      opacity: 0.78;
+    }
+
+    .thumb {
+      color: #aaa49b;
+      font-size: 22px;
+      line-height: 1;
+      filter: grayscale(1);
+    }
+
+    .like-button.is-liked {
+      border-color: rgba(224, 161, 6, 0.35);
+      color: #6c4d00;
+      background: #fff6d9;
+    }
+
+    .like-button.is-liked .thumb {
+      color: var(--like);
+      filter: none;
+    }
+
+    .blessing {
+      margin: 0;
+      color: var(--accent-dark);
+      font-weight: 800;
+    }
+
+    footer {
+      margin-top: 52px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    [data-lang="es"] {
+      display: none;
+    }
+
+    body.lang-es [data-lang="en"] {
+      display: none;
+    }
+
+    body.lang-es h1[data-lang="es"],
+    body.lang-es h2[data-lang="es"],
+    body.lang-es p[data-lang="es"],
+    body.lang-es div[data-lang="es"],
+    body.lang-es section[data-lang="es"],
+    body.lang-es nav[data-lang="es"] {
+      display: block;
+    }
+
+    body.lang-es li[data-lang="es"] {
+      display: list-item;
+    }
+
+    body.lang-es .toc a[data-lang="es"],
+    body.lang-es .detail-links a[data-lang="es"] {
+      display: inline-flex;
+    }
+
+    body.lang-es span[data-lang="es"],
+    body.lang-es button span[data-lang="es"],
+    body.lang-es footer span[data-lang="es"] {
+      display: inline;
+    }
+
+    @media (max-width: 640px) {
+      .language-switch {
+        top: 10px;
+        left: 10px;
+      }
+
+      .page {
+        width: min(100% - 28px, var(--max));
+        padding-top: 78px;
+      }
+
+      .lead {
+        font-size: 17px;
+      }
+
+      .profile {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .avatar {
+        width: 96px;
+      }
+
+      h2 {
+        font-size: 24px;
+      }
+
+      .numbered li {
+        padding-left: 38px;
+      }
+
+      .detail-links {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="language-switch" aria-label="Language switch">
+    <button type="button" data-set-lang="en" aria-pressed="true">EN</button>
+    <button type="button" data-set-lang="es" aria-pressed="false">ES</button>
+  </div>
+
+  <div class="page">
+    <header>
+      <p class="kicker" data-lang="en">Product Testing and Supplier Collaboration Blog</p>
+      <p class="kicker" data-lang="es">Blog de Pruebas de Productos y Colaboracion con Proveedores</p>
+
+      <h1 data-lang="en">Hello, I am Dawn Voyager</h1>
+      <h1 data-lang="es">Hola, soy Dawn Voyager</h1>
+
+      <p class="lead" data-lang="en">
+        Welcome to my blog. I focus on Amazon product testing and supplier connections. This page gives you a clear introduction, a simple reading path, and direct guidance on how we can start a collaboration.
+      </p>
+      <p class="lead" data-lang="es">
+        Bienvenido a mi blog. Me enfoco en pruebas de productos de Amazon y conexiones con proveedores. Esta pagina te ofrece una presentacion clara, una ruta de lectura sencilla y una guia directa para iniciar una colaboracion.
+      </p>
+
+      <nav class="guide" aria-label="Reading guide">
+        <p class="guide-title" data-lang="en">Reading Guide</p>
+        <p class="guide-title" data-lang="es">Guia de Lectura</p>
+        <ul class="toc">
+          <li><a href="#about" data-lang="en">About Me</a><a href="#about" data-lang="es">Sobre Mi</a></li>
+          <li><a href="#testing" data-lang="en">Testing Areas</a><a href="#testing" data-lang="es">Areas de Prueba</a></li>
+          <li><a href="#rules" data-lang="en">Collaboration Rules</a><a href="#rules" data-lang="es">Reglas de Colaboracion</a></li>
+          <li><a href="#benefits" data-lang="en">Supplier Benefits</a><a href="#benefits" data-lang="es">Beneficios de Proveedores</a></li>
+          <li><a href="#important-guides" data-lang="en">Important Guides</a><a href="#important-guides" data-lang="es">Guias Importantes</a></li>
+          <li><a href="#support" data-lang="en">Like and Support</a><a href="#support" data-lang="es">Apoyo</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <section id="about">
+        <h2 data-lang="en">First, a Short Introduction</h2>
+        <h2 data-lang="es">Primero, una Breve Presentacion</h2>
+
+        <div class="profile">
+          <img
+            class="avatar"
+            src="images/touxiang.img"
+            onerror="this.onerror=null;this.src='https://pps.whatsapp.net/v/t61.24694-24/511455677_1066834558229229_2424727254934193300_n.jpg?ccb=11-4&amp;oh=01_Q5Aa4wHM-RDdtOpKWyKLWxtE8hGlSTYKIt5q9q5hkNa6AGQ20Q&amp;oe=6A489731&amp;_nc_sid=5e03e0&amp;_nc_cat=100';"
+            alt="Portrait of Dawn Voyager"
+          >
+          <div>
+            <p class="name" data-lang="en">My name is Dawn Voyager.</p>
+            <p class="name" data-lang="es">Mi nombre es Dawn Voyager.</p>
+            <p data-lang="en">
+              I am a supplier focused on Amazon testing opportunities and supplier resource connections. I am glad you are here, and I appreciate the time you take to understand how I work.
+            </p>
+            <p data-lang="es">
+              Soy proveedor y me enfoco en oportunidades de prueba en Amazon y conexiones con recursos de proveedores. Me alegra que estes aqui y agradezco el tiempo que tomas para conocer mi forma de trabajar.
+            </p>
+            <div class="action-row">
+              <a class="chat-button" href="https://wa.me/8618133052650" target="_blank" rel="noopener">
+                <span aria-hidden="true">*</span>
+                <span data-lang="en">Start Today's Conversation</span>
+                <span data-lang="es">Iniciar la Conversacion de Hoy</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="testing">
+        <h2 data-lang="en">Main Products I Test</h2>
+        <h2 data-lang="es">Productos Principales que Pruebo</h2>
+
+        <p data-lang="en">At the moment, I often focus on these categories:</p>
+        <p data-lang="es">Actualmente suelo enfocarme en estas categorias:</p>
+        <ul class="text-list">
+          <li data-lang="en">Daily care products</li>
+          <li data-lang="es">Productos de cuidado diario</li>
+          <li data-lang="en">Automotive maintenance products</li>
+          <li data-lang="es">Productos para mantenimiento de automoviles</li>
+          <li data-lang="en">Kitchen and home cleaning products</li>
+          <li data-lang="es">Productos de limpieza para cocina y hogar</li>
+          <li data-lang="en">Children's toys and family lifestyle products</li>
+          <li data-lang="es">Juguetes infantiles y articulos para la vida familiar</li>
+        </ul>
+
+        <p data-lang="en">
+          From time to time during the year, I may offer Bluetooth earbuds, electric kettles, hair dryers, premium skincare products, and other items. Occasionally, TV manufacturers also work with me, but that opportunity is relatively rare.
+        </p>
+        <p data-lang="es">
+          De vez en cuando durante el ano, puedo ofrecer audifonos Bluetooth, hervidores electricos, secadores de cabello, productos premium para el cuidado de la piel y otros articulos. En ocasiones tambien colaboro con fabricantes de televisores, aunque esa oportunidad es poco frecuente.
+        </p>
+
+        <p class="note" data-lang="en">
+          If you want to know what I am currently testing, feel free to contact me directly. After you reach out, I will send today's available testing products. You can choose a suitable item or wait for the next opportunity.
+        </p>
+        <p class="note" data-lang="es">
+          Si quieres saber que productos estoy probando ahora, puedes contactarme directamente. Despues de hablar conmigo, te enviare los productos disponibles del dia. Puedes elegir un articulo adecuado o esperar la proxima oportunidad.
+        </p>
+      </section>
+
+      <section id="rules">
+        <h2 data-lang="en">My Collaboration Rules</h2>
+        <h2 data-lang="es">Mis Reglas de Colaboracion</h2>
+
+        <ol class="numbered">
+          <li data-lang="en">My policy is prepaid: Prepaid.</li>
+          <li data-lang="es">Mi politica es prepago: Prepaid.</li>
+          <li data-lang="en">Send me your Amazon link. The account needs review content, and you should provide a screenshot showing that the email belongs to you, with the time visible.</li>
+          <li data-lang="es">Enviame tu enlace de Amazon. La cuenta debe tener contenido de resenas y debes proporcionar una captura que muestre que el correo te pertenece, con la hora visible.</li>
+          <li data-lang="en">Send me your payment email. We support PayPal and Vnome payments.</li>
+          <li data-lang="es">Enviame tu correo de pago. Aceptamos pagos por PayPal y Vnome.</li>
+          <li data-lang="en">Also provide one backup contact link, such as Instagram, TikTok, or Facebook.</li>
+          <li data-lang="es">Tambien proporciona un enlace de contacto alternativo, como Instagram, TikTok o Facebook.</li>
+        </ol>
+
+        <p class="note" data-lang="en">
+          Please keep communication honest before any collaboration begins. Product experience should be based on your real personal use, and both sides should respect platform rules and each other's time.
+        </p>
+        <p class="note" data-lang="es">
+          Mantengamos una comunicacion honesta antes de iniciar cualquier colaboracion. La experiencia del producto debe basarse en tu uso personal real, y ambas partes deben respetar las reglas de la plataforma y el tiempo de cada uno.
+        </p>
+      </section>
+
+      <section id="benefits">
+        <h2 data-lang="en">Supplier Benefits I Prepared</h2>
+        <h2 data-lang="es">Beneficios de Proveedores que Prepare</h2>
+
+        <p data-lang="en">
+          My time and energy are limited, so I will regularly share 20 different new suppliers each day. I will briefly introduce their rules, and you can contact them directly to see whether there is a suitable collaboration opportunity.
+        </p>
+        <p data-lang="es">
+          Mi tiempo y energia son limitados, asi que cada dia compartire 20 proveedores nuevos y diferentes. Presentare sus reglas de forma breve, y podras contactarlos directamente para ver si hay una oportunidad de colaboracion adecuada.
+        </p>
+
+        <p data-lang="en">
+          Of course, both sides must be willing to work together. Trust comes first; the product journey follows.
+        </p>
+        <p data-lang="es">
+          Por supuesto, ambas partes deben estar dispuestas a trabajar juntas. La confianza va primero; el camino del producto viene despues.
+        </p>
+
+        <div class="action-row">
+          <a class="resource-link is-flashing" href="https://pan.baidu.com/s/1xMIARvM8g84pMBQ64mrz4g?pwd=jfni" target="_blank" rel="noopener">
+            <span data-lang="en">Click here to get their contact information</span>
+            <span data-lang="es">Haz clic aqui para obtener sus contactos</span>
+          </a>
+        </div>
+      </section>
+
+      <section id="important-guides">
+        <h2 data-lang="en">Important Guides Before You Work With Suppliers</h2>
+        <h2 data-lang="es">Guias Importantes Antes de Trabajar con Proveedores</h2>
+
+        <p data-lang="en">
+          These links answer the questions many new testers ask most often. Click a topic below to jump to the answer, then open the section to read the details.
+        </p>
+        <p data-lang="es">
+          Estos enlaces responden las preguntas que muchos probadores nuevos hacen con mas frecuencia. Haz clic en un tema para ir a la respuesta y abre la seccion para leer los detalles.
+        </p>
+
+        <ul class="detail-links">
+          <li><a href="#supplier-trust" data-lang="en">Why suppliers may not want to work with me</a><a href="#supplier-trust" data-lang="es">Por que algunos proveedores no quieren colaborar conmigo</a></li>
+          <li><a href="#trusted-customer" data-lang="en">How to become a trusted customer</a><a href="#trusted-customer" data-lang="es">Como convertirte en un cliente confiable</a></li>
+          <li><a href="#payment-status" data-lang="en">Why payment sometimes looks missing</a><a href="#payment-status" data-lang="es">Por que a veces el pago parece faltar</a></li>
+          <li><a href="#amazon-account" data-lang="en">Why Amazon may remove reviews or restrict accounts</a><a href="#amazon-account" data-lang="es">Por que Amazon puede eliminar resenas o restringir cuentas</a></li>
+        </ul>
+
+        <div class="accordion">
+          <details id="supplier-trust">
+            <summary>
+              <span data-lang="en">Why suppliers may not want to work with me</span>
+              <span data-lang="es">Por que algunos proveedores no quieren colaborar conmigo</span>
+            </summary>
+            <div class="detail-body">
+              <p data-lang="en">
+                Suppliers need customers with a high level of honesty. Some people pretend to be product testers, lead suppliers into prepaid cooperation, and disappear after receiving money. That behavior damages trust for everyone. Because of this, suppliers have become much stronger at preventing scams and identifying risky accounts.
+              </p>
+              <p data-lang="es">
+                Los proveedores necesitan clientes con un alto nivel de honestidad. Algunas personas fingen ser probadores de productos, llevan a los proveedores a una colaboracion prepaga y desaparecen despues de recibir dinero. Esa conducta dana la confianza de todos. Por eso, los proveedores han mejorado mucho su capacidad para prevenir estafas e identificar cuentas riesgosas.
+              </p>
+            </div>
+          </details>
+
+          <details id="trusted-customer">
+            <summary>
+              <span data-lang="en">How to become a trusted customer</span>
+              <span data-lang="es">Como convertirte en un cliente confiable</span>
+            </summary>
+            <div class="detail-body">
+              <ol class="numbered">
+                <li data-lang="en">Use a valid referrer when possible. If someone has worked with a supplier at least two times over more than one month, ask that person to introduce you to a supplier with products you are interested in. A real referral can greatly increase trust.</li>
+                <li data-lang="es">Usa un recomendador valido cuando sea posible. Si alguien ha colaborado con un proveedor al menos dos veces durante mas de un mes, pide que te presente con un proveedor que tenga productos de tu interes. Una referencia real puede aumentar mucho la confianza.</li>
+                <li data-lang="en">Proactively provide your Amazon profile and your email address. Include a screenshot proving the email belongs to you. A consistent review history of at least two months can help suppliers feel more confident.</li>
+                <li data-lang="es">Proporciona de forma proactiva tu perfil de Amazon y tu correo electronico. Incluye una captura que demuestre que el correo te pertenece. Un historial constante de resenas durante al menos dos meses puede ayudar a que los proveedores confien mas.</li>
+                <li data-lang="en">Value every collaboration opportunity. Many suppliers join scam-warning communities to protect themselves. If you deceive one supplier, your future opportunities across that network may decrease sharply.</li>
+                <li data-lang="es">Valora cada oportunidad de colaboracion. Muchos proveedores participan en comunidades de advertencia contra estafas para protegerse. Si enganas a un proveedor, tus futuras oportunidades dentro de esa red pueden disminuir mucho.</li>
+                <li data-lang="en">Keep your account healthy. If an account has unsafe activity or policy violations, suppliers may detect risk through normal account safety checks. The best path is simple: use real information, real purchases, and policy-compliant behavior.</li>
+                <li data-lang="es">Manten tu cuenta saludable. Si una cuenta tiene actividad insegura o violaciones de politicas, los proveedores pueden detectar el riesgo mediante revisiones normales de seguridad. El mejor camino es simple: usa informacion real, compras reales y comportamiento que respete las reglas.</li>
+              </ol>
+            </div>
+          </details>
+
+          <details id="payment-status">
+            <summary>
+              <span data-lang="en">Why payment sometimes looks missing</span>
+              <span data-lang="es">Por que a veces el pago parece faltar</span>
+            </summary>
+            <div class="detail-body">
+              <ol class="numbered">
+                <li data-lang="en">Your money may be held by PayPal or another official payment channel. In that case, the supplier may have sent the money, but it has not entered your available balance yet. PayPal and other channels may apply monthly limits, reserves, or delayed availability, so it is important to understand your account limits.</li>
+                <li data-lang="es">Tu dinero puede estar retenido por PayPal u otro canal oficial de pago. En ese caso, el proveedor puede haber enviado el dinero, pero aun no aparece en tu saldo disponible. PayPal y otros canales pueden aplicar limites mensuales, reservas o disponibilidad retrasada, por eso es importante conocer los limites de tu cuenta.</li>
+                <li data-lang="en">If this happens, first check your held or reserved balance. If a refund is available and both sides agree, return the money to the supplier, take a screenshot, and explain the situation clearly.</li>
+                <li data-lang="es">Si esto ocurre, revisa primero tu saldo retenido o reservado. Si el reembolso esta disponible y ambas partes estan de acuerdo, devuelve el dinero al proveedor, toma una captura y explica la situacion con claridad.</li>
+                <li data-lang="en">Your payment account may also be restricted or banned. If you provide a restricted account, the supplier may not be able to transfer successfully. When a third-party payment platform is involved, funds can sometimes be held for a long time before returning to the supplier, even up to 180 days. Use a valid, active, and compliant payment account.</li>
+                <li data-lang="es">Tu cuenta de pago tambien puede estar restringida o bloqueada. Si proporcionas una cuenta restringida, el proveedor tal vez no pueda transferir correctamente. Cuando participa una plataforma de pago de terceros, los fondos a veces pueden quedar retenidos por mucho tiempo antes de volver al proveedor, incluso hasta 180 dias. Usa una cuenta de pago valida, activa y en regla.</li>
+              </ol>
+            </div>
+          </details>
+
+          <details id="amazon-account">
+            <summary>
+              <span data-lang="en">Why Amazon may remove reviews or restrict accounts</span>
+              <span data-lang="es">Por que Amazon puede eliminar resenas o restringir cuentas</span>
+            </summary>
+            <div class="detail-body">
+              <p class="note" data-lang="en">
+                Important reminder: only write reviews based on real product use, and always follow Amazon's review policies. Do not sell reviews, promise a rating, or write anything that does not reflect your real experience.
+              </p>
+              <p class="note" data-lang="es">
+                Recordatorio importante: escribe resenas solo basadas en el uso real del producto y respeta siempre las politicas de resenas de Amazon. No vendas resenas, no prometas una calificacion y no escribas algo que no refleje tu experiencia real.
+              </p>
+              <ol class="numbered">
+                <li data-lang="en">One major risk is writing many reviews in bulk. A healthy account should review naturally, at different times, and only after real use. Avoid repetitive review activity for the same type of product.</li>
+                <li data-lang="es">Un riesgo importante es escribir muchas resenas en bloque. Una cuenta saludable debe opinar de forma natural, en diferentes momentos y solo despues de un uso real. Evita actividad repetitiva de resenas para el mismo tipo de producto.</li>
+                <li data-lang="en">Do not write only advantages. Even with a five-star rating, a useful review can include both strengths and small weaknesses. For example: "I like the look and comfort of these shoes, but the laces could be better. A patterned lace would make them feel more refined."</li>
+                <li data-lang="es">No escribas solo ventajas. Incluso con una calificacion de cinco estrellas, una resena util puede incluir puntos fuertes y pequenas debilidades. Por ejemplo: "Me gusta el aspecto y la comodidad de estos zapatos, pero los cordones podrian mejorar. Un cordon con patron los haria verse mas refinados."</li>
+                <li data-lang="en">A Prime membership may improve the shopping and shipping experience, but it does not exempt any account from review policies. Do not rely on membership status to protect unsafe behavior.</li>
+                <li data-lang="es">Una membresia Prime puede mejorar la experiencia de compra y envio, pero no exime a ninguna cuenta de las politicas de resenas. No confies en la membresia para proteger un comportamiento inseguro.</li>
+                <li data-lang="en">During major sales periods such as spring promotions, autumn promotions, and Christmas, avoid unnatural high-volume review activity. Platforms often pay closer attention to unusual account patterns during busy seasons.</li>
+                <li data-lang="es">Durante grandes periodos de ofertas, como promociones de primavera, promociones de otono y Navidad, evita actividad de resenas con volumen poco natural. Las plataformas suelen prestar mas atencion a patrones inusuales durante temporadas de mucho movimiento.</li>
+                <li data-lang="en">Avoid abnormal purchase patterns from the same store in a short period, especially across unrelated categories. If you buy socks, then repeatedly buy pencils, paint, and other unrelated products from the same store, the activity may look unnatural. Buy what you truly need and keep your account behavior consistent with real shopping habits.</li>
+                <li data-lang="es">Evita patrones de compra anormales en la misma tienda durante un periodo corto, especialmente entre categorias sin relacion. Si compras calcetines y luego compras repetidamente lapices, pintura y otros productos sin relacion en la misma tienda, la actividad puede parecer poco natural. Compra lo que realmente necesitas y manten un comportamiento coherente con habitos reales de compra.</li>
+              </ol>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <section id="support">
+        <h2 data-lang="en">If I Have Helped You</h2>
+        <h2 data-lang="es">Si Te He Ayudado</h2>
+
+        <p data-lang="en">Please give me a like. Your support gives me more motivation to keep organizing new suppliers and product testing opportunities.</p>
+        <p data-lang="es">Dame un me gusta. Tu apoyo me da mas motivacion para seguir organizando nuevos proveedores y oportunidades de prueba de productos.</p>
+
+        <div class="like-area">
+          <button class="like-button" type="button" id="likeButton" aria-pressed="false">
+            <span class="thumb" aria-hidden="true">👍</span>
+            <span data-lang="en">Like</span>
+            <span data-lang="es">Me gusta</span>
+            <span id="likeCount">2305</span>
+          </button>
+          <p class="blessing" id="blessing" aria-live="polite">May your next collaboration be honest, smooth, and rewarding.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span data-lang="en">Thank you for reading. May every collaboration be clear, sincere, and useful.</span>
+      <span data-lang="es">Gracias por leer. Que cada colaboracion sea clara, sincera y util.</span>
+    </footer>
+  </div>
+
+  <script>
+    const likeButton = document.querySelector("#likeButton");
+    const likeCount = document.querySelector("#likeCount");
+    const blessing = document.querySelector("#blessing");
+    const languageButtons = document.querySelectorAll("[data-set-lang]");
+    const DEFAULT_LIKE_COUNT = 2305;
+    const LIKE_API_URL = "";
+    const blessings = [
+      "May your next collaboration be honest, smooth, and rewarding.",
+      "Wishing you trust, clarity, and good opportunities today.",
+      "May every product journey bring value and kindness.",
+      "Here is to better choices, better partners, and brighter days."
+    ];
+
+    let currentLikeCount = DEFAULT_LIKE_COUNT;
+    let savedLike = localStorage.getItem("dawnVoyagerLiked") === "true";
+    const savedLang = localStorage.getItem("dawnVoyagerLang") || "en";
+
+    function getLikeApiUrl() {
+      if (LIKE_API_URL) {
+        return LIKE_API_URL;
+      }
+      if (window.location.protocol === "file:") {
+        return "";
+      }
+      return "/api/likes";
+    }
+
+    function showBlessing(randomize) {
+      if (randomize) {
+        blessing.textContent = blessings[Math.floor(Math.random() * blessings.length)];
+        return;
+      }
+      blessing.textContent = blessings[0];
+    }
+
+    function renderLikeState(isLiked) {
+      likeButton.classList.toggle("is-liked", isLiked);
+      likeButton.setAttribute("aria-pressed", String(isLiked));
+      likeCount.textContent = String(currentLikeCount);
+      showBlessing(isLiked);
+    }
+
+    async function loadLikeCount() {
+      const apiUrl = getLikeApiUrl();
+      if (!apiUrl) {
+        renderLikeState(savedLike);
+        return;
+      }
+
+      try {
+        const response = await fetch(apiUrl, {
+          headers: { "Accept": "application/json" },
+          cache: "no-store"
+        });
+        if (!response.ok) {
+          throw new Error("Like count request failed");
+        }
+        const data = await response.json();
+        if (Number.isFinite(data.count)) {
+          currentLikeCount = Math.max(DEFAULT_LIKE_COUNT, Number(data.count));
+        }
+      } catch (error) {
+        currentLikeCount = DEFAULT_LIKE_COUNT;
+      }
+
+      renderLikeState(savedLike);
+    }
+
+    async function submitLike() {
+      if (savedLike) {
+        showBlessing(true);
+        return;
+      }
+
+      const apiUrl = getLikeApiUrl();
+      if (!apiUrl) {
+        currentLikeCount += 1;
+        savedLike = true;
+        localStorage.setItem("dawnVoyagerLiked", "true");
+        renderLikeState(true);
+        return;
+      }
+
+      likeButton.disabled = true;
+      try {
+        const response = await fetch(apiUrl, {
+          method: "POST",
+          headers: { "Accept": "application/json" }
+        });
+        if (!response.ok) {
+          throw new Error("Like submit request failed");
+        }
+        const data = await response.json();
+        if (Number.isFinite(data.count)) {
+          currentLikeCount = Math.max(DEFAULT_LIKE_COUNT, Number(data.count));
+        } else {
+          currentLikeCount += 1;
+        }
+        savedLike = true;
+        localStorage.setItem("dawnVoyagerLiked", "true");
+        renderLikeState(true);
+      } catch (error) {
+        blessing.textContent = "The like service is not ready yet. Please try again soon.";
+      } finally {
+        likeButton.disabled = false;
+      }
+    }
+
+    function setLanguage(lang) {
+      const activeLang = lang === "es" ? "es" : "en";
+      document.documentElement.lang = activeLang;
+      document.body.classList.toggle("lang-es", activeLang === "es");
+      languageButtons.forEach((button) => {
+        button.setAttribute("aria-pressed", String(button.dataset.setLang === activeLang));
+      });
+      localStorage.setItem("dawnVoyagerLang", activeLang);
+    }
+
+    likeButton.addEventListener("click", submitLike);
+
+    languageButtons.forEach((button) => {
+      button.addEventListener("click", () => setLanguage(button.dataset.setLang));
+    });
+
+    document.querySelectorAll(".detail-links a").forEach((link) => {
+      link.addEventListener("click", () => {
+        const target = document.querySelector(link.getAttribute("href"));
+        if (target && target.tagName.toLowerCase() === "details") {
+          target.open = true;
+        }
+      });
+    });
+
+    loadLikeCount();
+    setLanguage(savedLang);
+  </script>
+</body>
+</html>

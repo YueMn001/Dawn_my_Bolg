@@ -1,0 +1,8 @@
+name = "dawn-voyager-like-api"
+main = "cloudflare-worker.js"
+compatibility_date = "2026-07-01"
+
+[[d1_databases]]
+binding = "LIKE_DB"
+database_name = "dawn_voyager_likes"
+database_id = "replace-with-your-d1-database-id"
